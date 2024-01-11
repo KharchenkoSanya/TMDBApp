@@ -1,6 +1,18 @@
 import Foundation
 
-struct DataResult: Codable {
+struct AllDataTrendingMovies: Codable {
+    let page: Int
+    let results: [MoviesDataResult]
+    let totalPages, totalResults: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case page, results
+        case totalPages = "total_pages"
+        case totalResults = "total_results"
+    }
+}
+
+struct MoviesDataResult: Codable {
     let adult: Bool
     let backdropPath: String
     let id: Int
