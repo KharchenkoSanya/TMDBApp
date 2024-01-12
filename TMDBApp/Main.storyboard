@@ -24,16 +24,16 @@
             </objects>
             <point key="canvasLocation" x="801" y="393"/>
         </scene>
-        <!--Popular Films AndTV Shows-->
+        <!--Popular Movies And Series-->
         <scene sceneID="zmO-B9-77x">
             <objects>
-                <viewController id="wwP-1T-hJx" customClass="PopularFilmsAndTVShows" customModule="TMDBApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="wwP-1T-hJx" customClass="PopularMoviesAndSeries" customModule="TMDBApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PNy-q8-Zry">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="6Te-Ks-ijq">
-                                <rect key="frame" x="0.0" y="106" width="393" height="663"/>
+                                <rect key="frame" x="0.0" y="154" width="393" height="615"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="wwP-1T-hJx" id="wec-Gz-Zug"/>
@@ -41,7 +41,7 @@
                                 </connections>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="4Qb-8f-0Ta">
-                                <rect key="frame" x="8" y="67" width="377" height="32"/>
+                                <rect key="frame" x="8" y="115" width="377" height="32"/>
                                 <segments>
                                     <segment title="Movies"/>
                                     <segment title="Series"/>
@@ -50,6 +50,13 @@
                                     <action selector="segmentedControlValueChanged:" destination="wwP-1T-hJx" eventType="valueChanged" id="aUp-OS-U98"/>
                                 </connections>
                             </segmentedControl>
+                            <searchBar contentMode="redraw" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="yZ9-ll-CCm">
+                                <rect key="frame" x="0.0" y="59" width="393" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="wwP-1T-hJx" id="HtV-iG-MIB"/>
+                                </connections>
+                            </searchBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="XYs-Im-Qma"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -57,14 +64,18 @@
                             <constraint firstItem="XYs-Im-Qma" firstAttribute="bottom" secondItem="6Te-Ks-ijq" secondAttribute="bottom" id="1Vz-et-qF9"/>
                             <constraint firstItem="XYs-Im-Qma" firstAttribute="trailing" secondItem="4Qb-8f-0Ta" secondAttribute="trailing" constant="8" id="4cr-mA-0KO"/>
                             <constraint firstItem="4Qb-8f-0Ta" firstAttribute="leading" secondItem="XYs-Im-Qma" secondAttribute="leading" constant="8" id="6Q4-Vy-Yeo"/>
-                            <constraint firstItem="4Qb-8f-0Ta" firstAttribute="top" secondItem="XYs-Im-Qma" secondAttribute="top" constant="8" id="Pts-7B-3Ma"/>
+                            <constraint firstItem="4Qb-8f-0Ta" firstAttribute="top" secondItem="yZ9-ll-CCm" secondAttribute="bottom" id="B28-Gp-3gX"/>
+                            <constraint firstItem="yZ9-ll-CCm" firstAttribute="top" secondItem="XYs-Im-Qma" secondAttribute="top" id="HA5-Rm-eFH"/>
+                            <constraint firstItem="yZ9-ll-CCm" firstAttribute="leading" secondItem="XYs-Im-Qma" secondAttribute="leading" id="VY6-Fu-Ccq"/>
                             <constraint firstItem="6Te-Ks-ijq" firstAttribute="leading" secondItem="XYs-Im-Qma" secondAttribute="leading" id="e8L-in-dJq"/>
                             <constraint firstItem="6Te-Ks-ijq" firstAttribute="top" secondItem="4Qb-8f-0Ta" secondAttribute="bottom" constant="8" id="hpY-TC-f4o"/>
                             <constraint firstItem="XYs-Im-Qma" firstAttribute="trailing" secondItem="6Te-Ks-ijq" secondAttribute="trailing" id="j6H-Js-Vpw"/>
+                            <constraint firstItem="yZ9-ll-CCm" firstAttribute="trailing" secondItem="XYs-Im-Qma" secondAttribute="trailing" id="tEW-7M-ifr"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" systemItem="mostViewed" id="oNw-zk-Rct"/>
                     <connections>
+                        <outlet property="searchBar" destination="yZ9-ll-CCm" id="Kn5-rk-ba5"/>
                         <outlet property="segmentedControl" destination="4Qb-8f-0Ta" id="4Vu-Ij-DQ2"/>
                         <outlet property="tableView" destination="6Te-Ks-ijq" id="5x9-xD-fm0"/>
                     </connections>

@@ -1,37 +1,40 @@
 import UIKit
 
-final class PopularFilmsAndTVShows: UIViewController {
+final class PopularMoviesAndSeries: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     private var viewModel = ViewModel()
     private var refreshControl = UIRefreshControl()
+    private var originalMoviesDataResult: [MoviesDataResult] = []
+    private var originalSeriesDataResult: [SeriesDataResult] = []
     
-    var searchController = UISearchController(searchResultsController: nil)
-    var searchBarIsEmpty: Bool {
-        guard let text = searchController.searchBar.text else { return false }
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchBar.text else { return false }
         return text.isEmpty
     }
+    
     private var isFiltering: Bool {
-        searchController.isActive && !searchBarIsEmpty
+        !searchBarIsEmpty
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
+        configureSearchBar()
         loadDataForSelectedSegment()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        searchController.searchResultsUpdater = self
-        tableView.tableHeaderView = searchController.searchBar
-        definesPresentationContext = true
-    }
-    
     private func configureTableView() {
+        self.refreshControl.backgroundColor = .clear
         tableView.register(.init(nibName: FilmsAndTVTableViewCell.identifier, bundle: nil), forCellReuseIdentifier: FilmsAndTVTableViewCell.identifier)
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         tableView.refreshControl = refreshControl
+    }
+    
+    private func configureSearchBar() {
+        searchBar.delegate = self
     }
     
     @objc private func refreshData() {
@@ -45,11 +48,13 @@ final class PopularFilmsAndTVShows: UIViewController {
     private func loadDataForSelectedSegment() {
         if segmentedControl.selectedSegmentIndex == 0 {
             viewModel.loadTrendingMovies { success in
+                self.originalMoviesDataResult = self.viewModel.moviesDataResult
                 self.tableView.reloadData()
                 self.handleRefreshControlEnd(success: success)
             }
         } else {
             viewModel.loadTrendingSeries { success in
+                self.originalSeriesDataResult = self.viewModel.seriesDataResult
                 self.tableView.reloadData()
                 self.handleRefreshControlEnd(success: success)
             }
@@ -67,13 +72,12 @@ final class PopularFilmsAndTVShows: UIViewController {
     }
 }
 
-extension PopularFilmsAndTVShows: UITableViewDataSource, UITableViewDelegate {
-    
+extension PopularMoviesAndSeries: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if segmentedControl.selectedSegmentIndex == 0 {
-            viewModel.moviesDataResult.count
+            return viewModel.moviesDataResult.count
         } else {
-            viewModel.seriesDataResult.count
+            return viewModel.seriesDataResult.count
         }
     }
     
@@ -101,27 +105,29 @@ extension PopularFilmsAndTVShows: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-extension PopularFilmsAndTVShows: UISearchResultsUpdating {
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        filterContentForSearchText(searchController.searchBar.text!)
+extension PopularMoviesAndSeries: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterContentForSearchText(searchText)
     }
     
     private func filterContentForSearchText(_ searchText: String) {
         if searchText.isEmpty {
-            tableView.reloadData()
+            if segmentedControl.selectedSegmentIndex == 0 {
+                viewModel.moviesDataResult = originalMoviesDataResult
+            } else {
+                viewModel.seriesDataResult = originalSeriesDataResult
+            }
         } else {
             if segmentedControl.selectedSegmentIndex == 0 {
-                viewModel.moviesDataResult = viewModel.moviesDataResult.filter { (movieData: MoviesDataResult) -> Bool in
+                viewModel.moviesDataResult = originalMoviesDataResult.filter { (movieData: MoviesDataResult) -> Bool in
                     return movieData.title.lowercased().contains(searchText.lowercased())
                 }
-                tableView.reloadData()
             } else {
-                viewModel.seriesDataResult = viewModel.seriesDataResult.filter { (seriesData: SeriesDataResult) -> Bool in
+                viewModel.seriesDataResult = originalSeriesDataResult.filter { (seriesData: SeriesDataResult) -> Bool in
                     return seriesData.name.lowercased().contains(searchText.lowercased())
                 }
-                tableView.reloadData()
             }
         }
+        tableView.reloadData()
     }
 }
