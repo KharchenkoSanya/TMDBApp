@@ -4,7 +4,11 @@ struct AllDataTrendingMovies: Codable {
     let page: Int
     let results: [MoviesDataResult]
     let totalPages, totalResults: Int
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> d8b7bb0ca2f61b7d4babd75d0617856bd28b1d3f
     enum CodingKeys: String, CodingKey {
         case page, results
         case totalPages = "total_pages"
